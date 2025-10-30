@@ -6,6 +6,8 @@ from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
 from config_data.config import Config, load_config
 from handlers import other_handlers, user_handlers
+from database.database import init_db
+from services.file_handling import prepare_book
 
 # Инициализируем логгер
 logger = logging.getLogger(__name__)
@@ -30,6 +32,17 @@ async def main():
         default=DefaultBotProperties(parse_mode=ParseMode.HTML)
     )
     dp = Dispatcher()
+
+    # Подготавливаем книгу
+    logger.info("Preparing book")
+    book = prepare_book("book/Bredberi_Marsianskie-hroniki.txt")
+    logger.info("The book is uploaded. Total pages: %d", len(book))
+
+    # Инициализируем "базу данных"
+    db: dict = init_db()
+
+    # Сохраняем готовую книгу и "базу данных" в workflow_data"
+    dp.workflow_data.update(book=book, db=db)
 
     # Регистриуем роутеры в диспетчере
     dp.include_router(user_handlers.router)
