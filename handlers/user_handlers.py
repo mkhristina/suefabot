@@ -74,7 +74,7 @@ async def process_yes_answer(message: Message):
 
 
 # Этот хэндлер срабатывает на любую из игровых кнопок
-@router.message(F.text.in_([LEXICON_RU['rock'],
+@router.message(F.text.in_([LEXICON_RU['rock_button'],
                             LEXICON_RU['paper'],
                             LEXICON_RU['scissors']]))
 async def process_game_button(message: Message):
@@ -93,7 +93,7 @@ async def process_beginning_command(message: Message, book: dict, db: dict):
     db["users"][message.from_user.id]["page"] = 1
     text = book[1]
     await message.answer(
-        text=text,
+        text=f"<u>{text}</u>",
         reply_markup=create_pagination_keyboard(
             "backward",
             f"1/{len(book)}",
@@ -109,7 +109,7 @@ async def process_beginning_command(message: Message, book: dict, db: dict):
 async def process_continue_command(message: Message, book: dict, db: dict):
     text = book[db["users"][message.from_user.id]["page"]]
     await message.answer(
-        text=text,
+        text=f"<u>{text}</u>",
         reply_markup=create_pagination_keyboard(
             "backward",
             f"{db['users'][message.from_user.id]["page"]}/{len(book)}",
@@ -143,7 +143,7 @@ async def process_forward_press(callback: CallbackQuery, book: dict, db: dict):
         db["users"][callback.from_user.id]["page"] += 1
         text = book[current_page + 1]
         await callback.message.edit_text(
-            text=text,
+            text=f"<u>{text}</u>",
             reply_markup=create_pagination_keyboard(
                 "backward",
                 f"{current_page + 1}/{len(book)}",
@@ -162,7 +162,7 @@ async def process_backward_press(callback: CallbackQuery, book: dict, db: dict):
         db["users"][callback.from_user.id]["page"] -= 1
         text = book[current_page - 1]
         await callback.message.edit_text(
-            text=text,
+            text=f"<u>{text}</u>",
             reply_markup=create_pagination_keyboard(
                 "backward",
                 f"{current_page - 1}/{len(book)}",
@@ -191,7 +191,7 @@ async def process_bookmark_press(callback: CallbackQuery, book: dict, db: dict):
     text = book[int(callback.data)]
     db["users"][callback. from_user.id]["page"] = int(callback.data)
     await callback.message. edit_text(
-        text=text,
+        text=f"<u>{text}</u>",
         reply_markup=create_pagination_keyboard(
             "backward",
             f"{db['users'][callback.from_user.id]['page']}/{len(book)}",
