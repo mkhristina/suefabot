@@ -13,3 +13,4 @@ parse.mode.inamessage
 parse.mode.intheobject
 pyproject.toml
 red_bot.py
+users.csv
